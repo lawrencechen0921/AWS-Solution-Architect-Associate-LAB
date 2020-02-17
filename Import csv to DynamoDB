@@ -1,0 +1,118 @@
+# Lab Details
+1.This lab walks you through the steps to import CSV data into DynamoDB Table. 
+2.You will practice using Amazon DynamoDB, Amazon Lambda function and S3 bucket. 
+3.AWS Region: US East (N. Virginia) 
+
+# Introduction
+# Amazon DynamoDB
+Amazon DynamoDB is a fully managed NoSQL database service where maintenance, administrative burden, operative and scaling are taken care off. 
+We Don't need to provide the specifications of how much we are going to save. 
+It provides single digit latency even for terabytes of data and hence it is used for applications where very fast reads are required. 
+It is used in applications like gaming where data needs to be captured and changes take place very quickly. 
+
+
+# Lab Tasks
+Create  an Amazon DynamoDB table.  
+Create S3 bucket and upload a CSV file. 
+Create a Lambda function and Configure. 
+Create S3 bucket event to trigger Lambda Function. 
+Test the DynamoDB table to check the data imported. 
+
+
+
+
+# Steps 
+Create DynamoDB Table
+Make sure to choose  region in the AWS Management console dashboard which is present in the top right corner. 
+Navigate and click on  which will be available under  section of  
+In the DynamoDB Dashboard Click on  and then provide the values the follows 
+Table Name: whizlabs_students_table 
+Primary Key : id and Click the dropdown and choose String and click on . 
+Your table will be created within 2-3 minutes. 
+
+The DynamoDB Table will be ready to use when the Status becomes Active you can verify the Status of the table by Navigating to Tables menu in the Dynamodb Dashboard. 
+
+ 
+# Create a S3 bucket and upload CSV File
+Navigate to Amazon S3 Page. 
+Click on Create Bucket. 
+Enter a unique Bucket Name and click on Create.
+Name of S3 bucket : csvs3dynamo 
+Make sure the bucket is created in the N.Virginia region. 
+Once the bucket is created, click on the bucket. 
+Download students.csv file to your local by clicking here. Open students.csv file in your local system to see the data provided. This data will be imported to DynamoDB Table. 
+This CSV file contains the comma separate values of students. 
+Upload the students.csv file to csvs3dynamo S3 Bucket. 
+Once the File is successfully uploaded, you will be able to see the file inside the bucket. 
+
+Now the CSV file is ready to be imported to the dynamoDB table. 
+ 
+# Creating Lambda Function
+Navigate to and click on  service under  in the AWS Console . 
+Make sure you are in N.Virginia region. 
+Click on  and  
+Choose one of the following options to create your function. Select Author from Scratch 
+Function Name    : Enter csv_s3_dynamodb 
+Runtime        : Select Python 3.7 (Choose from Dropdown) 
+Click on Choose or Create an execution Role and then Select Use an existing Role
+Choose whizlabs_import_to_dynamodb_role from the dropdown menu 
+Click on  
+Once the function is created, it will open the main page of Lambda function. 
+Download the csv_s3_dynamodb.py Open it in a notepad in your system.
+The csv_s3_dynamodb.py contains Python code which uses boto3 APIs for AWS. 
+Python code does following work
+Imports CSV file from S3 bucket. 
+Splits CSV data to multiple strings. 
+Uploads data to DynamoDB table. 
+Please go through the logic - It’s optional. 
+Now remove the existing codes in the function code environment window. 
+Copy and paste the code in the Function Code Environment window and save the function as lambda_function.py 
+In the code change the below part:
+Line 5 - Update the DynamoDB table name
+table = dynamodb.Table("whizlabs_students_table") 
+After updating the code scroll down to the Basic setting and change the Timeout value to 1 min and then leave the other values as default and then Click on  on the top right corner. 
+Now you have successfully created a Lambda function for importing the CSV file data into the DynamoDB table. 
+Test the CSV Data Import using Mock test in Lambda
+In Lambda csv_s3_dynamodb lambda function page, click Test on top right corner. 
+Configure Mock Data
+Event Template     : Select Amazon S3 Put 
+Event Name        : Enter csv 
+Json Code
+Under S3 → bucket → name →  Enter csvs3dynamo 
+Under S3 → object → Key → Enter students.csv 
+Click on Create. 
+Make sure S3 bucket name and file name are correct in JSON based on what you have created. 
+
+Click on Test in Top right Corner to trigger the lambda function. 
+Once the lambda function is successfully executed, you will be able to see detailed success message. 
+
+Navigate to DynamoDB Table whizlabs_students_table to see the imported data. 
+
+Adding Event Triggers to S3 Bucket
+Navigate back to S3 Page. 
+Click on csvs3dynamo S3 bucket which we have created. 
+Click on the Properties Tab and scroll down to Events in Advanced Settings.  
+Click on Events. 
+Enter the Below Details
+Name                : csv_upload 
+All Object create events    : check 
+Suffix                : Enter .csv 
+Send to            : Lambda Function 
+Lambda            : Select csv_s3_dynamodb 
+Click on Save. 
+
+Now everytime a CSV file is Uploaded it will trigger lambda to import CSV data from S3 bucket file to dynamoDB Table. 
+ 
+Test the S3 event Trigger to import data to dynamoDB Table
+Open students.csv in your local system and update the file to change name id and subject of students. Save it as students1.csv. Or Download the students1.csv. 
+Upload the students1.csv file to csvs3dynamo S3 bucket. 
+
+This Upload event should have triggered lambda function csv_s3_dynamodb to import csv data to DynamoDB table whizlabs_students_table. 
+Navigate to DynamoDB table whizlabs_students_table to see the changes. Click on the refresh button if items have not yet changed. 
+
+You can see that CSV data has been successfully imported to DynamoDB Table. 
+Completion and Conclusion 
+You have successfully used AWS management console to Create an Amazon DynamoDB Table. 
+You have  successfully created the Lambda function and configured it to import CSV data. 
+You have created S3 Event to Import data to DynamoDB Table from CSV to DynamoDB Table. 
+You have tested the Import of CSV file data to DynamoDB table
